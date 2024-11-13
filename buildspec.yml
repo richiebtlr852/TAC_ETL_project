@@ -1,0 +1,55 @@
+version: 0.2
+
+env:
+  variables:
+    # Snowflake connection parameters 
+    SNOWFLAKE_ACCOUNT: "your_snowflake_account"
+    SNOWFLAKE_USER: "your_snowflake_user"
+    SNOWFLAKE_PASSWORD: "your_snowflake_password"
+    SNOWFLAKE_WAREHOUSE: "your_warehouse"
+    SNOWFLAKE_DATABASE: "your_database"
+    SNOWFLAKE_SCHEMA: "your_schema"
+
+    # Lambda function name 
+    LAMBDA_FUNCTION_NAME: "fetch_tac_files"
+
+phases:
+  install:
+    commands:
+      - echo Installing dependencies...
+      - pip install -r lambda/fetch_tac_files/requirements.txt  # Install dependencies for Lambda
+      - curl -o snowsql-installer https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2.21/linux_x86_64/snowsql-1.2.21-linux_x86_64.bash  # Adjust URL based on your environment
+      - chmod +x snowsql-installer
+      - ./snowsql-installer -y
+      - export PATH=$PATH:/root/.snowsql/bin  # Update path to include SnowSQL
+
+  pre_build:
+    commands:
+      - echo Setting up Snowflake environment...
+      - snowsql -v  # Verify SnowSQL installation
+      - echo Pre-build complete.
+
+  build:
+    commands:
+      # Run SnowSQL scripts to deploy to Snowflake
+      - echo Running Snowflake SQL scripts...
+      - snowsql -a $SNOWFLAKE_ACCOUNT -u $SNOWFLAKE_USER -p $SNOWFLAKE_PASSWORD -w $SNOWFLAKE_WAREHOUSE -d $SNOWFLAKE_DATABASE -s $SNOWFLAKE_SCHEMA -f sql/schemas/create_landing_schema.sql
+      - snowsql -a $SNOWFLAKE_ACCOUNT -u $SNOWFLAKE_USER -p $SNOWFLAKE_PASSWORD -w $SNOWFLAKE_WAREHOUSE -d $SNOWFLAKE_DATABASE -s $SNOWFLAKE_SCHEMA -f sql/schemas/create_staging_schema.sql
+      - snowsql -a $SNOWFLAKE_ACCOUNT -u $SNOWFLAKE_USER -p $SNOWFLAKE_PASSWORD -w $SNOWFLAKE_WAREHOUSE -d $SNOWFLAKE_DATABASE -s $SNOWFLAKE_SCHEMA -f sql/schemas/create_star_schema.sql
+      - snowsql -a $SNOWFLAKE_ACCOUNT -u $SNOWFLAKE_USER -p $SNOWFLAKE_PASSWORD -w $SNOWFLAKE_WAREHOUSE -d $SNOWFLAKE_DATABASE -s $SNOWFLAKE_SCHEMA -f snowpipe/create_snowpipe_database.sql
+      - snowsql -a $SNOWFLAKE_ACCOUNT -u $SNOWFLAKE_USER -p $SNOWFLAKE_PASSWORD -w $SNOWFLAKE_WAREHOUSE -d $SNOWFLAKE_DATABASE -s $SNOWFLAKE_SCHEMA -f snowpipe/create_file_format.sql
+      - snowsql -a $SNOWFLAKE_ACCOUNT -u $SNOWFLAKE_USER -p $SNOWFLAKE_PASSWORD -w $SNOWFLAKE_WAREHOUSE -d $SNOWFLAKE_DATABASE -s $SNOWFLAKE_SCHEMA -f snowpipe/create_storage_integration.sql
+      - snowsql -a $SNOWFLAKE_ACCOUNT -u $SNOWFLAKE_USER -p $SNOWFLAKE_PASSWORD -w $SNOWFLAKE_WAREHOUSE -d $SNOWFLAKE_DATABASE -s $SNOWFLAKE_SCHEMA -f snowpipe/create_snowpipe.sql
+
+      # Package and deploy Lambda function
+      - echo Deploying Lambda function...
+      - cd lambda/fetch_tac_files
+      - zip -r ../fetch_tac_files.zip .  # Create deployment package
+      - aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --zip-file fileb://../fetch_tac_files.zip
+
+  post_build:
+    commands:
+      - echo Build completed.
+artifacts:
+  files:
+    - lambda/fetch_tac_files.zip
