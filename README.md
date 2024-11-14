@@ -12,9 +12,9 @@ SnowPipe is setup using AWS CodeBuild, to collect files from S3 bucket and load 
 
 Lambda function pulls files ('accident', 'vehicle') from TAC Website and copies them into S3 raw bucket
 
-S3 raw bucket sends event trigger to SnowPipe. Snowpipe loads the files into landing.
+S3 raw bucket sends event trigger to SnowPipe. Snowpipe loads the files into landing stage within Snowflake.
 
-Data is then populated through the different Snowflake stages - landing, staging, star schema
+Data is then populated, using DBT, through the different Snowflake stages - landing, staging, star schema
 
-End result is star schema (FACT_ACCIDENT & DIMS are populated within Snowflake)
+End result is star schema within Snowflake (FACT_ACCIDENT & DIM tables) are populated and can be used for analytics and insights
 
