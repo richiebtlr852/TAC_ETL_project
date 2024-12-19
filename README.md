@@ -4,7 +4,8 @@ ETL project that pulls files from TAC website which are then loaded into Snowfla
 
 <img width="505" alt="image" src="https://github.com/user-attachments/assets/238f2ce5-6b2a-4cab-86e5-10172dc50a0c">
 
-[TAC_star_schema.pdf](https://github.com/user-attachments/files/18203665/TAC_star_schema.pdf)
+<img width="448" alt="tac_star schema" src="https://github.com/user-attachments/assets/ffa91e3c-eb7d-46de-8cb0-e96989c3ba75" />
+
 
 
 **Summary of project**
