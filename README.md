@@ -4,6 +4,9 @@ ETL project that pulls files from TAC website which are then loaded into Snowfla
 
 <img width="505" alt="image" src="https://github.com/user-attachments/assets/238f2ce5-6b2a-4cab-86e5-10172dc50a0c">
 
+[TAC_star_schema.pdf](https://github.com/user-attachments/files/18203665/TAC_star_schema.pdf)
+
+
 **Summary of project**
 
 Snowflake landing, staging, and star schema are setup, using AWS CodeBuild
