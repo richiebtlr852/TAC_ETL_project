@@ -14,7 +14,7 @@ Snowflake data base and landing schema and tables are setup, using AWS CodeBuild
 
 SnowPipe and applicable components (file format object, external stages etc) is setup using AWS CodeBuild, to collect files from S3 bucket and load them into Snowflake landing
 
-Lambda function pulls files ('accident', 'vehicle') from TAC Website and copies them into S3 raw bucket. Lambda function also deployed using AWS CodeBuild
+Lambda function connects to the TAC website, grabs files ('accident', 'vehicle') and copies them into S3 raw bucket. Lambda function also deployed using AWS CodeBuild
 
 S3 raw bucket sends event trigger to SnowPipe. Snowpipe loads the files into landing stage within Snowflake.
 
