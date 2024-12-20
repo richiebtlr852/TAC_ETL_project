@@ -10,7 +10,7 @@ logger.setLevel(logging.INFO)
 
 # Initialize the S3 client
 s3 = boto3.client('s3')
-RAW_BUCKET_NAME = 'your-raw-s3-bucket-name'  
+RAW_BUCKET_NAME = 'richiebtlr-raw-s3-bucket'  
 
 def web_accident_file_download(URI):
     logger.info("Starting download from URI: %s", URI)
