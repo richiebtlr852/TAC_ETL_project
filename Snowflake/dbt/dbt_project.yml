@@ -1,0 +1,78 @@
+name: tac_data_pipeline
+version: 1.0.0
+profile: tac_profile
+
+# Define directories for models
+model-paths:
+  - models
+
+# Where to store compiled SQL files
+target-path: target
+
+# Where to store DBT-generated artifacts
+analysis-paths:
+  - analyses
+
+# Where seeds (raw CSV files for testing or loading) are located
+seed-paths:
+  - seeds
+
+# Where snapshots (incremental models) are located
+snapshot-paths:
+  - snapshots
+
+# Tests for your models
+test-paths:
+  - tests
+
+# Project variables
+vars:
+  schema_name: tac
+  database_name: analytics
+
+# Models configuration
+models:
+  tac_data_pipeline:
+    # Configuration for all models
+    +schema: "{{ var('schema_name') }}"
+    +database: "{{ var('database_name') }}"
+    +materialized: view  # Default materialization for models
+    
+    # Staging models
+    staging:
+      +schema: staging
+      +materialized: incremental
+      accident:
+        +tags: [landing_to_staging]
+      vehicle:
+        +tags: [landing_to_staging]
+    
+    # Dimension and Fact models
+    dimensions:
+      +schema: dims
+      +materialized: table
+    facts:
+      +schema: facts
+      +materialized: table
+
+# Specify the default configurations for tests
+tests:
+  +severity: warn
+
+# Target configurations
+target: dev
+
+# Define environments
+profiles:
+  dev:
+    outputs:
+      default:
+        type: snowflake
+        account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+        user: "{{ env_var('SNOWFLAKE_USER') }}"
+        password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
+        role: "{{ env_var('SNOWFLAKE_ROLE') }}"
+        warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE') }}"
+        database: "{{ env_var('SNOWFLAKE_DATABASE') }}"
+        schema: "{{ var('schema_name') }}"
+    target: default
