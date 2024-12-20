@@ -18,7 +18,8 @@ Lambda function pulls files ('accident', 'vehicle') from TAC Website and copies 
 
 S3 raw bucket sends event trigger to SnowPipe. Snowpipe loads the files into landing stage within Snowflake.
 
-Data is then populated, using DBT, through the different Snowflake stages - landing, staging, star schema
+Data is then populated, using DBT, through the different Snowflake stages - landing, staging, star schema. 
+DBT models are manually executed locally using venv (virtual environment). Normally use orchestration tool to automate the execution of the models (i.e Airflow, DBT Cloud)
 
 End result is star schema within Snowflake (FACT_ACCIDENT & DIM tables) are populated and can be used for analytics and insights
 
