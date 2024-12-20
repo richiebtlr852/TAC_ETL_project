@@ -5,7 +5,7 @@ The Snowpipe leverages the my_s3_stage stage (pointing to the S3 bucket),
 
 -- Create an external stage for the S3 bucket, linking it to the storage integration and file format
 CREATE OR REPLACE STAGE my_s3_stage
-URL = 's3://richiebtlr-test-ETL/test-data/'  -- Replace with your actual S3 bucket path
+URL = 's3://richiebtlr-test-ETL/test-data/'  
 STORAGE_INTEGRATION = my_s3_integration
 FILE_FORMAT = snowpipe_db.csv_file_format;
 
