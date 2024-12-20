@@ -8,8 +8,8 @@ CREATE OR REPLACE STORAGE INTEGRATION my_s3_integration
 TYPE = EXTERNAL_STAGE
 STORAGE_PROVIDER = 'S3'
 ENABLED = TRUE
-STORAGE_AWS_ROLE_ARN = '<YOUR_AWS_ROLE_ARN>'  -- Replace with your AWS IAM role ARN
-STORAGE_ALLOWED_LOCATIONS = ('s3://your-bucket-name/path-to-folder/');  -- Replace with your S3 bucket and folder path
+STORAGE_AWS_ROLE_ARN = '<arn:aws:iam::423jkbaubcd12:user/omkar'  
+STORAGE_ALLOWED_LOCATIONS = ('s3://richiebtlr-test-bucket/test-etl-bucket/');  
 
 -- Grant usage on the integration
-GRANT USAGE ON INTEGRATION my_s3_integration TO ROLE <YOUR_ROLE>;  -- Replace <YOUR_ROLE> with the appropriate Snowflake role
+GRANT USAGE ON INTEGRATION my_s3_integration TO ROLE richiebtlr-snowflake-role>;  
